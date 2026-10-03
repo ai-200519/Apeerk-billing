@@ -1,0 +1,18 @@
+table:
+  name: invoice
+  schema: public
+object_relationships:
+  - name: invoice_status
+    using:
+      foreign_key_constraint_on: status
+  - name: subscription
+    using:
+      foreign_key_constraint_on: subscription_id
+array_relationships:
+  - name: billings
+    using:
+      foreign_key_constraint_on:
+        column: invoice_id
+        table:
+          name: billing
+          schema: public

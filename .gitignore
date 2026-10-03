@@ -1,0 +1,39 @@
+
+# dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Next.js
+.next/
+out/
+
+# Bun
+.bun/
+bun.lockb
+
+# production
+build/
+dist/
+
+# environment files
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+bun-debug.log*
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

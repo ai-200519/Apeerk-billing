@@ -1,0 +1,12 @@
+table:
+  name: payment_mode
+  schema: public
+is_enum: true
+array_relationships:
+  - name: billings
+    using:
+      foreign_key_constraint_on:
+        column: payment_mode
+        table:
+          name: billing
+          schema: public

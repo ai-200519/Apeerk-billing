@@ -1,0 +1,11 @@
+table:
+  name: material
+  schema: public
+array_relationships:
+  - name: subscriptions
+    using:
+      foreign_key_constraint_on:
+        column: material_id
+        table:
+          name: subscription
+          schema: public

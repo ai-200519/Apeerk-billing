@@ -1,0 +1,8 @@
+- "!include public_billing.yaml"
+- "!include public_customer.yaml"
+- "!include public_customer_type.yaml"
+- "!include public_invoice.yaml"
+- "!include public_invoice_status.yaml"
+- "!include public_material.yaml"
+- "!include public_payment_mode.yaml"
+- "!include public_subscription.yaml"

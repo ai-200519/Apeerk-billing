@@ -1,0 +1,10 @@
+table:
+  name: billing
+  schema: public
+object_relationships:
+  - name: invoice
+    using:
+      foreign_key_constraint_on: invoice_id
+  - name: paymentModeByPaymentMode
+    using:
+      foreign_key_constraint_on: payment_mode

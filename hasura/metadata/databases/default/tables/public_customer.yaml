@@ -1,0 +1,15 @@
+table:
+  name: customer
+  schema: public
+object_relationships:
+  - name: customer_type
+    using:
+      foreign_key_constraint_on: type
+array_relationships:
+  - name: subscriptions
+    using:
+      foreign_key_constraint_on:
+        column: customer_id
+        table:
+          name: subscription
+          schema: public
