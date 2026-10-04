@@ -8,6 +8,13 @@ node_modules/
 .next/
 out/
 
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
 # Bun
 .bun/
 bun.lockb
