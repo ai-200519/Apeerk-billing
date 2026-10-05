@@ -1,12 +1,11 @@
 "use client";
 
 import { List, useTable, DateField } from "@refinedev/antd";
-import { Table, Tag } from "antd";
+import { Button, Popconfirm, Space, Table, Tag, Tooltip } from "antd";
+import { DollarOutlined, EyeOutlined, StopOutlined } from "@ant-design/icons";
 import { formatMoney } from "@/lib/format";
 import Link from "next/link";
-import { Button } from "antd";
 import { useUpdate } from "@refinedev/core";
-import { Popconfirm } from "antd";
 
 const STATUS_COLOR: Record<string, string> = {
     DRAFT: "default",
@@ -73,14 +72,27 @@ export default function InvoiceList() {
                 <Table.Column
                     title="Actions"
                     render={(_, r: any) => (
-                        <>
-                            <Link href={`/invoices/show/${r.id}`}>
-                                <Button size="small">View</Button>
-                            </Link>{" "}
-                            {r.status === "PENDING" && (
-                                <Link href={`/billings/create?invoice_id=${r.id}`}>
-                                    <Button size="small" type="primary">Record payment</Button>
+                        <Space size="small">
+                            <Tooltip title="View invoice">
+                                <Link href={`/invoices/show/${r.id}`}>
+                                    <Button
+                                        aria-label={`View invoice ${r.invoice_number}`}
+                                        icon={<EyeOutlined />}
+                                        size="small"
+                                    />
                                 </Link>
+                            </Tooltip>
+                            {r.status === "PENDING" && (
+                                <Tooltip title="Record payment">
+                                    <Link href={`/billings/create?invoice_id=${r.id}`}>
+                                        <Button
+                                            aria-label={`Record payment for ${r.invoice_number}`}
+                                            icon={<DollarOutlined />}
+                                            size="small"
+                                            type="primary"
+                                        />
+                                    </Link>
+                                </Tooltip>
                             )}
                             {r.status === "PENDING" && (r.billings ?? []).length === 0 && (
                                 <Popconfirm
@@ -91,10 +103,17 @@ export default function InvoiceList() {
                                     cancelText="Keep"
                                     onConfirm={() => cancelInvoice(r.id)}
                                 >
-                                    <Button size="small" danger>Cancel</Button>
+                                    <Tooltip title="Cancel invoice">
+                                        <Button
+                                            aria-label={`Cancel invoice ${r.invoice_number}`}
+                                            danger
+                                            icon={<StopOutlined />}
+                                            size="small"
+                                        />
+                                    </Tooltip>
                                 </Popconfirm>
                             )}
-                        </>
+                        </Space>
                     )}
                 />
             </Table>
