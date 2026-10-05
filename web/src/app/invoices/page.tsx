@@ -60,13 +60,18 @@ export default function InvoiceList() {
                 />
                 <Table.Column
                     title="Actions"
-                    render={(_, r: any) =>
-                        r.status === "PENDING" ? (
-                            <Link href={`/billings/create?invoice_id=${r.id}`}>
-                                <Button size="small" type="primary">Record payment</Button>
-                            </Link>
-                        ) : null
-                    }
+                    render={(_, r: any) => (
+                        <>
+                            <Link href={`/invoices/show/${r.id}`}>
+                                <Button size="small">View</Button>
+                            </Link>{" "}
+                            {r.status === "PENDING" && (
+                                <Link href={`/billings/create?invoice_id=${r.id}`}>
+                                    <Button size="small" type="primary">Record payment</Button>
+                                </Link>
+                            )}
+                        </>
+                    )}
                 />
             </Table>
         </List>
