@@ -39,6 +39,12 @@ export const RefineContext = ({ children }: { children: React.ReactNode }) => (
                     show: "/invoices/show/:id", // page comes on Day 5
                     meta: { label: "Invoices" },
                 },
+                {
+                    name: "billing",
+                    list: "/billings",
+                    create: "/billings/create",
+                    meta: { label: "Payments" },
+                },
             ]}
             options={{ syncWithLocation: true, warnWhenUnsavedChanges: true }}
         >
