@@ -5,6 +5,8 @@ import { Table, Tag } from "antd";
 import { formatMoney } from "@/lib/format";
 import Link from "next/link";
 import { Button } from "antd";
+import { useUpdate } from "@refinedev/core";
+import { Popconfirm } from "antd";
 
 const STATUS_COLOR: Record<string, string> = {
     DRAFT: "default",
@@ -26,6 +28,16 @@ export default function InvoiceList() {
             ],
         },
     });
+
+    const { mutate: updateInvoice } = useUpdate();
+    const cancelInvoice = (id: string) =>
+        updateInvoice({
+            resource: "invoice",
+            id,
+            values: { status: "CANCELLED" },
+            meta: { fields: ["id", "status"] },
+            successNotification: { message: "Invoice cancelled", type: "success" },
+        });
 
     return (
         <List>
@@ -69,6 +81,18 @@ export default function InvoiceList() {
                                 <Link href={`/billings/create?invoice_id=${r.id}`}>
                                     <Button size="small" type="primary">Record payment</Button>
                                 </Link>
+                            )}
+                            {r.status === "PENDING" && (r.billings ?? []).length === 0 && (
+                                <Popconfirm
+                                    title="Cancel this invoice?"
+                                    description="This cannot be undone."
+                                    okText="Cancel invoice"
+                                    okButtonProps={{ danger: true }}
+                                    cancelText="Keep"
+                                    onConfirm={() => cancelInvoice(r.id)}
+                                >
+                                    <Button size="small" danger>Cancel</Button>
+                                </Popconfirm>
                             )}
                         </>
                     )}

@@ -7,6 +7,7 @@ import {
     ThemedLayout,
     ErrorComponent,
     useNotificationProvider,
+    ThemedTitle,
 } from "@refinedev/antd";
 import routerProvider from "@refinedev/nextjs-router";
 import { App as AntdApp } from "antd";
@@ -37,7 +38,7 @@ export const RefineContext = ({ children }: { children: React.ReactNode }) => (
                 {
                     name: "invoice",
                     list: "/invoices",
-                    show: "/invoices/show/:id", // page comes on Day 5
+                    show: "/invoices/show/:id",
                     meta: { label: "Invoices" },
                 },
                 {
@@ -49,7 +50,12 @@ export const RefineContext = ({ children }: { children: React.ReactNode }) => (
             ]}
             options={{ syncWithLocation: true, warnWhenUnsavedChanges: true }}
         >
-            <ThemedLayout>{children}</ThemedLayout>
+            <ThemedLayout Title={({ collapsed }) => (
+                <ThemedTitle
+                    collapsed={collapsed}
+                    text={collapsed ? "" : "Apeerk billing"}
+                />
+            )}>{children}</ThemedLayout>
         </Refine>
     </AntdApp>
 );

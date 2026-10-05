@@ -22,9 +22,11 @@ export function InvoiceTemplate({ invoice }: { invoice: any }) {
     const totalTtc = Number(invoice.total_ttc);
     const vatAmount = Math.round((totalTtc - totalHt) * 100) / 100;
     const paid = billings.reduce((s, b) => s + Number(b.amount), 0);
-    const amountDue = Math.max(Math.round((totalTtc - paid) * 100) / 100, 0);
     const isPaid = invoice.status === "PAID";
-
+    const isCancelled = invoice.status === "CANCELLED";
+    const amountDue = isCancelled
+        ? 0
+        : Math.max(Math.round((totalTtc - paid) * 100) / 100, 0);
     return (
         <div className="inv-sheet">
             {/* Header */}
@@ -78,11 +80,12 @@ export function InvoiceTemplate({ invoice }: { invoice: any }) {
 
             {/* Headline */}
             <div className="inv-headline">
-                {isPaid
-                    ? `Payée / Paid : ${formatMoney(totalTtc)}`
-                    : `${formatMoney(amountDue)} à payer avant le ${fmtDate(invoice.due_date)}`}
+                {isCancelled
+                    ? "Facture annulée / Cancelled invoice"
+                    : isPaid
+                        ? `Payée / Paid : ${formatMoney(totalTtc)}`
+                        : `${formatMoney(amountDue)} à payer avant le ${fmtDate(invoice.due_date)}`}
             </div>
-
             {/* Lines */}
             <table className="inv-table">
                 <thead>
