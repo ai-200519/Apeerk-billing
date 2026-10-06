@@ -27,7 +27,7 @@ export const RefineContext = ({ children }: { children: React.ReactNode }) => (
                     list: "/customers",
                     create: "/customers/create",
                     show: "/customers/show/:id",
-                    meta: { label: "Customers" },
+                    meta: { label: "Clients/Customers" },
                 },
                 {
                     name: "subscription",
@@ -39,7 +39,7 @@ export const RefineContext = ({ children }: { children: React.ReactNode }) => (
                     name: "invoice",
                     list: "/invoices",
                     show: "/invoices/show/:id",
-                    meta: { label: "Invoices" },
+                    meta: { label: "Invoices/Factures" },
                 },
                 {
                     name: "billing",
