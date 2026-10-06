@@ -1,7 +1,8 @@
 "use client";
 
 import { Create, useForm, useSelect } from "@refinedev/antd";
-import { Form, Select, InputNumber, DatePicker } from "antd";
+import { Col, DatePicker, Form, InputNumber, Row, Select } from "antd";
+import { SaveOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { formatMoney } from "@/lib/format";
 
@@ -28,9 +29,10 @@ export default function SubscriptionCreate() {
     });
 
     return (
-        <Create saveButtonProps={saveButtonProps}>
+        <Create saveButtonProps={{ ...saveButtonProps, icon: <SaveOutlined /> }}>
             <Form
                 {...formProps}
+                className="create-form"
                 layout="vertical"
                 initialValues={{
                     quantity: 1,
@@ -58,40 +60,53 @@ export default function SubscriptionCreate() {
                     })
                 }
             >
-                <Form.Item label="Customer" name="customer_id" rules={[{ required: true }]}>
-                    <Select {...customerSelect} showSearch placeholder="Select a customer" />
-                </Form.Item>
-
-                <Form.Item label="Product" name="material_id" rules={[{ required: true }]}>
-                    <Select {...materialSelect} />
-                </Form.Item>
-
-                <Form.Item label="Quantity (licences)" name="quantity" rules={[{ required: true }]}>
-                    <InputNumber min={1} precision={0} style={{ width: "100%" }} />
-                </Form.Item>
-
-                <Form.Item label="Start date" name="start_date" rules={[{ required: true }]}>
-                    <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
-                </Form.Item>
-
-                <Form.Item
-                    label="End date"
-                    name="end_date"
-                    dependencies={["start_date"]}
-                    rules={[
-                        { required: true },
-                        ({ getFieldValue }) => ({
-                            validator(_, value) {
-                                const start = getFieldValue("start_date");
-                                return !value || !start || value.isAfter(start)
-                                    ? Promise.resolve()
-                                    : Promise.reject(new Error("End date must be after start date"));
-                            },
-                        }),
-                    ]}
-                >
-                    <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
-                </Form.Item>
+                <div className="form-section">
+                    <div className="form-section-title">Subscription details</div>
+                    <Row gutter={16}>
+                        <Col xs={24} md={12}>
+                            <Form.Item label="Customer" name="customer_id" rules={[{ required: true }]}>
+                                <Select {...customerSelect} showSearch placeholder="Select a customer" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={12}>
+                            <Form.Item label="Product" name="material_id" rules={[{ required: true }]}>
+                                <Select {...materialSelect} placeholder="Select a product" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={16}>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="Quantity (licences)" name="quantity" rules={[{ required: true }]}>
+                                <InputNumber min={1} precision={0} />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="Start date" name="start_date" rules={[{ required: true }]}>
+                                <DatePicker format="DD/MM/YYYY" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item
+                                label="End date"
+                                name="end_date"
+                                dependencies={["start_date"]}
+                                rules={[
+                                    { required: true },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            const start = getFieldValue("start_date");
+                                            return !value || !start || value.isAfter(start)
+                                                ? Promise.resolve()
+                                                : Promise.reject(new Error("End date must be after start date"));
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <DatePicker format="DD/MM/YYYY" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </div>
             </Form>
         </Create>
     );

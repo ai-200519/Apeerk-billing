@@ -32,7 +32,7 @@ export function InvoiceTemplate({ invoice }: { invoice: any }) {
             {/* Header */}
             <div className="inv-header">
                 <div>
-                    <img src="/logo-apeerk.svg" alt="Apeerk" height={32} />
+                    <img src="/logo-apeerk.png" alt="Apeerk" height={32} />
                     <h1>FACTURE / INVOICE</h1>
                     <div className="inv-number">{invoice.invoice_number}</div>
                 </div>

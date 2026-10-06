@@ -12,10 +12,14 @@ export default function CustomerShow() {
         meta: {
             fields: ["id", "name", "type", "billing_address", "vat_number", "created_at"],
         },
-    }); const customer = query?.data?.data;
+    });
+    const customer = query?.data?.data;
 
     return (
-        <Show isLoading={query?.isLoading}>
+        <Show
+            isLoading={query?.isLoading}
+            title={customer?.name || "Customer"}
+        >
             <Title level={5}>Name</Title>
             <Text>{customer?.name}</Text>
             <Title level={5}>Type</Title>

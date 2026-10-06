@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { RefineContext } from "./_refine_context";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Apeerk Billing",

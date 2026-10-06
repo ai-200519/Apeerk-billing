@@ -3,7 +3,8 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { useShow } from "@refinedev/core";
-import { Button, Spin, Result } from "antd";
+import { ArrowLeftOutlined, DownloadOutlined, DollarOutlined } from "@ant-design/icons";
+import { Button, Result, Space, Spin, Tooltip } from "antd";
 import { InvoiceTemplate } from "@/components/invoice/InvoiceTemplate";
 
 export default function InvoiceShow() {
@@ -39,15 +40,21 @@ export default function InvoiceShow() {
     return (
         <div>
             <div className="no-print inv-toolbar">
-                <Link href="/invoices"><Button>← Back</Button></Link>
-                <Button type="primary" onClick={() => window.print()}>
-                    Export PDF
-                </Button>
+                <Space size="small">
+                    <Tooltip title="Back to invoices">
+                        <Link href="/invoices">
+                            <Button icon={<ArrowLeftOutlined />}>Back</Button>
+                        </Link>
+                    </Tooltip>
+                    <Button icon={<DownloadOutlined />} type="primary" onClick={() => window.print()}>
+                        Export PDF
+                    </Button>
                 {invoice?.status === "PENDING" && (
                     <Link href={`/billings/create?invoice_id=${invoice.id}`}>
-                        <Button>Record payment</Button>
+                        <Button icon={<DollarOutlined />}>Record payment</Button>
                     </Link>
                 )}
+                </Space>
             </div>
 
             {query?.isLoading ? (

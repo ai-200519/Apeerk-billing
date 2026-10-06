@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { Create, useForm, useSelect } from "@refinedev/antd";
 import { Form, Select, InputNumber, DatePicker } from "antd";
+import { Col, Row } from "antd";
+import { SaveOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useSearchParams } from "next/navigation";
 import { formatMoney } from "@/lib/format";
@@ -53,9 +55,10 @@ export default function BillingCreate() {
     }, [selected?.id, remaining, form]);
 
     return (
-        <Create saveButtonProps={saveButtonProps}>
+        <Create saveButtonProps={{ ...saveButtonProps, icon: <SaveOutlined /> }}>
             <Form
                 {...formProps}
+                className="create-form"
                 layout="vertical"
                 initialValues={{
                     invoice_id: presetInvoice,
@@ -71,42 +74,50 @@ export default function BillingCreate() {
                     })
                 }
             >
-                <Form.Item label="Invoice (pending only)" name="invoice_id" rules={[{ required: true }]}>
-                    <Select {...selectProps} showSearch placeholder="Select an invoice" />
-                </Form.Item>
-
-                <Form.Item label="Payment mode" name="payment_mode" rules={[{ required: true }]}>
-                    <Select
-                        options={[
-                            { value: "VIREMENT", label: "Bank transfer (virement)" },
-                            { value: "CARTE", label: "Card" },
-                            { value: "ESPECES", label: "Cash" },
-                        ]}
-                    />
-                </Form.Item>
-
-                <Form.Item label="Payment date" name="payment_date" rules={[{ required: true }]}>
-                    <DatePicker format="DD/MM/YYYY" style={{ width: "100%" }} />
-                </Form.Item>
-
-                <Form.Item
-                    label={remaining !== undefined ? `Amount (remaining: ${formatMoney(remaining)})` : "Amount"}
-                    name="amount"
-                    rules={[
-                        { required: true },
-                        () => ({
-                            validator(_, value) {
-                                if (value === undefined || value === null) return Promise.resolve();
-                                if (value <= 0) return Promise.reject(new Error("Amount must be positive"));
-                                if (remaining !== undefined && value > remaining)
-                                    return Promise.reject(new Error("Amount exceeds the remaining balance"));
-                                return Promise.resolve();
-                            },
-                        }),
-                    ]}
-                >
-                    <InputNumber min={0.01} precision={2} style={{ width: "100%" }} />
-                </Form.Item>
+                <div className="form-section">
+                    <div className="form-section-title">Payment details</div>
+                    <Form.Item label="Invoice (pending only)" name="invoice_id" rules={[{ required: true }]}>
+                        <Select {...selectProps} showSearch placeholder="Select an invoice" />
+                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="Payment mode" name="payment_mode" rules={[{ required: true }]}>
+                                <Select
+                                    options={[
+                                        { value: "VIREMENT", label: "Bank transfer (virement)" },
+                                        { value: "CARTE", label: "Card" },
+                                        { value: "ESPECES", label: "Cash" },
+                                    ]}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item label="Payment date" name="payment_date" rules={[{ required: true }]}>
+                                <DatePicker format="DD/MM/YYYY" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} md={8}>
+                            <Form.Item
+                                label={remaining !== undefined ? `Amount (remaining: ${formatMoney(remaining)})` : "Amount"}
+                                name="amount"
+                                rules={[
+                                    { required: true },
+                                    () => ({
+                                        validator(_, value) {
+                                            if (value === undefined || value === null) return Promise.resolve();
+                                            if (value <= 0) return Promise.reject(new Error("Amount must be positive"));
+                                            if (remaining !== undefined && value > remaining)
+                                                return Promise.reject(new Error("Amount exceeds the remaining balance"));
+                                            return Promise.resolve();
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <InputNumber min={0.01} precision={2} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </div>
             </Form>
         </Create>
     );
