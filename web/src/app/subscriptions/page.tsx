@@ -3,6 +3,7 @@
 import { List, useTable, DateField } from "@refinedev/antd";
 import { Table } from "antd";
 import { formatMoney } from "@/lib/format";
+import type { SubscriptionListRecord } from "@/lib/types";
 
 export default function SubscriptionList() {
     const { tableProps } = useTable({
@@ -20,8 +21,8 @@ export default function SubscriptionList() {
     return (
         <List>
             <Table {...tableProps} rowKey="id">
-                <Table.Column title="Customer" render={(_, r: any) => r.customer?.name} />
-                <Table.Column title="Product" render={(_, r: any) => r.material?.name} />
+                <Table.Column title="Customer" render={(_, r: SubscriptionListRecord) => r.customer?.name} />
+                <Table.Column title="Product" render={(_, r: SubscriptionListRecord) => r.material?.name} />
                 <Table.Column dataIndex="quantity" title="Qty" />
                 <Table.Column
                     dataIndex="unit_price"

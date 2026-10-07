@@ -1,11 +1,19 @@
 "use client";
 
 import { Create, useForm } from "@refinedev/antd";
+import type { BaseRecord, HttpError } from "@refinedev/core";
 import { Form, Input, Row, Col, Select } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 
+type CustomerFormValues = {
+    name: string;
+    type: "B2B" | "B2C";
+    billing_address: string;
+    vat_number?: string | null;
+};
+
 export default function CustomerCreate() {
-    const { formProps, saveButtonProps } = useForm({
+    const { formProps, saveButtonProps, form } = useForm<BaseRecord, HttpError, CustomerFormValues>({
         resource: "customer",
         action: "create",
         meta: { fields: ["id"] },
@@ -13,12 +21,13 @@ export default function CustomerCreate() {
 
     return (
         <Create saveButtonProps={{ ...saveButtonProps, icon: <SaveOutlined /> }}>
-            <Form
+            <Form<CustomerFormValues>
                 {...formProps}
+                form={form}
                 className="create-form"
                 layout="vertical"
                 initialValues={{ type: "B2C" }}
-                onFinish={(values: any) =>
+                onFinish={(values: CustomerFormValues) =>
                     formProps.onFinish?.({
                         ...values,
                         // empty string -> null, so B2C customers store a real NULL

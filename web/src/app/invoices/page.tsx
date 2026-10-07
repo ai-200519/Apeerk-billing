@@ -6,6 +6,7 @@ import { DollarOutlined, EyeOutlined, StopOutlined } from "@ant-design/icons";
 import { formatMoney } from "@/lib/format";
 import Link from "next/link";
 import { useUpdate } from "@refinedev/core";
+import type { InvoiceRecord } from "@/lib/types";
 
 const STATUS_COLOR: Record<string, string> = {
     DRAFT: "default",
@@ -44,7 +45,7 @@ export default function InvoiceList() {
                 <Table.Column dataIndex="invoice_number" title="Invoice" />
                 <Table.Column
                     title="Customer"
-                    render={(_, r: any) => r.subscription?.customer?.name}
+                    render={(_, r: InvoiceRecord) => r.subscription?.customer?.name}
                 />
                 <Table.Column
                     dataIndex="issue_date"
@@ -65,13 +66,13 @@ export default function InvoiceList() {
                 />
                 <Table.Column
                     title="Paid"
-                    render={(_, r: any) =>
-                        formatMoney((r.billings ?? []).reduce((s: number, b: any) => s + Number(b.amount), 0))
+                    render={(_, r: InvoiceRecord) =>
+                        formatMoney((r.billings ?? []).reduce((s, b) => s + Number(b.amount), 0))
                     }
                 />
                 <Table.Column
                     title="Actions"
-                    render={(_, r: any) => (
+                    render={(_, r: InvoiceRecord) => (
                         <Space size="small">
                             <Tooltip title="View invoice">
                                 <Link href={`/invoices/show/${r.id}`}>

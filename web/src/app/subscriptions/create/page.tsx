@@ -1,13 +1,35 @@
 "use client";
 
 import { Create, useForm, useSelect } from "@refinedev/antd";
+import type { BaseRecord, HttpError } from "@refinedev/core";
 import { Col, DatePicker, Form, InputNumber, Row, Select } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import type { Dayjs } from "dayjs";
 import { formatMoney } from "@/lib/format";
 
+type CustomerOption = {
+    id: string;
+    name: string;
+    type: string;
+};
+
+type MaterialOption = {
+    id: string;
+    name: string;
+    unit_price: number | string;
+};
+
+type SubscriptionFormValues = {
+    customer_id: string;
+    material_id: string;
+    quantity: number;
+    start_date: Dayjs | string;
+    end_date: Dayjs | string;
+};
+
 export default function SubscriptionCreate() {
-    const { formProps, saveButtonProps, form } = useForm({
+    const { formProps, saveButtonProps, form } = useForm<BaseRecord, HttpError, SubscriptionFormValues>({
         resource: "subscription",
         action: "create",
         redirect: "list",
@@ -16,22 +38,23 @@ export default function SubscriptionCreate() {
 
     const { selectProps: customerSelect } = useSelect({
         resource: "customer",
-        optionValue: (item: any) => item.id,
-        optionLabel: (item: any) => `${item.name} (${item.type})`,
+        optionValue: (item: CustomerOption) => item.id,
+        optionLabel: (item: CustomerOption) => `${item.name} (${item.type})`,
         meta: { fields: ["id", "name", "type"] },
     });
 
     const { selectProps: materialSelect } = useSelect({
         resource: "material",
-        optionValue: (item: any) => item.id,
-        optionLabel: (item: any) => `${item.name} - ${formatMoney(item.unit_price)}`,
+        optionValue: (item: MaterialOption) => item.id,
+        optionLabel: (item: MaterialOption) => `${item.name} - ${formatMoney(item.unit_price)}`,
         meta: { fields: ["id", "name", "unit_price"] },
     });
 
     return (
         <Create saveButtonProps={{ ...saveButtonProps, icon: <SaveOutlined /> }}>
-            <Form
+            <Form<SubscriptionFormValues>
                 {...formProps}
+                form={form}
                 className="create-form"
                 layout="vertical"
                 initialValues={{
@@ -49,13 +72,13 @@ export default function SubscriptionCreate() {
                         );
                     }
                 }}
-                onFinish={(values: any) =>
+                onFinish={(values: SubscriptionFormValues) =>
                     formProps.onFinish?.({
                         customer_id: values.customer_id,
                         material_id: values.material_id,
                         quantity: values.quantity,
-                        start_date: values.start_date.format("YYYY-MM-DD"),
-                        end_date: values.end_date.format("YYYY-MM-DD"),
+                        start_date: dayjs(values.start_date).format("YYYY-MM-DD"),
+                        end_date: dayjs(values.end_date).format("YYYY-MM-DD"),
                         // unit_price is not sent: the database copies it from the material
                     })
                 }

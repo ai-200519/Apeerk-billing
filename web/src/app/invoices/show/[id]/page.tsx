@@ -6,6 +6,7 @@ import { useShow } from "@refinedev/core";
 import { ArrowLeftOutlined, DownloadOutlined, DollarOutlined } from "@ant-design/icons";
 import { Button, Result, Space, Spin, Tooltip } from "antd";
 import { InvoiceTemplate } from "@/components/invoice/InvoiceTemplate";
+import type { InvoiceRecord } from "@/lib/types";
 
 export default function InvoiceShow() {
     const { query } = useShow({
@@ -27,7 +28,7 @@ export default function InvoiceShow() {
         },
     });
 
-    const invoice: any = query?.data?.data;
+    const invoice = query?.data?.data as InvoiceRecord | undefined;
 
     // the browser uses the page title as the default PDF filename
     useEffect(() => {

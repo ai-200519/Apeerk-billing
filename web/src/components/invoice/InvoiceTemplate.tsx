@@ -3,6 +3,8 @@
 import dayjs from "dayjs";
 import { ISSUER, BANK, VAT_RATE } from "@/lib/constants";
 import { formatMoney } from "@/lib/format";
+import type { InvoiceRecord } from "@/lib/types";
+import Image from "next/image";
 import "./invoice.css";
 
 const fmtDate = (v?: string) => (v ? dayjs(v).format("DD/MM/YYYY") : "-");
@@ -13,10 +15,10 @@ const MODE_LABEL: Record<string, string> = {
     ESPECES: "Espèces",
 };
 
-export function InvoiceTemplate({ invoice }: { invoice: any }) {
+export function InvoiceTemplate({ invoice }: { invoice: InvoiceRecord }) {
     const sub = invoice.subscription;
     const customer = sub?.customer;
-    const billings: any[] = invoice.billings ?? [];
+    const billings = invoice.billings ?? [];
 
     const totalHt = Number(invoice.total_ht);
     const totalTtc = Number(invoice.total_ttc);
@@ -32,7 +34,7 @@ export function InvoiceTemplate({ invoice }: { invoice: any }) {
             {/* Header */}
             <div className="inv-header">
                 <div>
-                    <img src="/logo-apeerk.png" alt="Apeerk" height={32} />
+                    <Image src="/logo-apeerk.png" alt="Apeerk" width={160} height={64} />
                     <h1>FACTURE / INVOICE</h1>
                     <div className="inv-number">{invoice.invoice_number}</div>
                 </div>
@@ -49,11 +51,11 @@ export function InvoiceTemplate({ invoice }: { invoice: any }) {
             {/* Metadata */}
             <div className="inv-meta">
                 <div>
-                    <div className="inv-label">Date d'émission / Issue date</div>
+                    <div className="inv-label">Date d&apos;émission / Issue date</div>
                     <div className="inv-value">{fmtDate(invoice.issue_date)}</div>
                 </div>
                 <div>
-                    <div className="inv-label">Date d'échéance / Due date</div>
+                    <div className="inv-label">Date d&apos;échéance / Due date</div>
                     <div className="inv-value">{fmtDate(invoice.due_date)}</div>
                 </div>
                 <div>

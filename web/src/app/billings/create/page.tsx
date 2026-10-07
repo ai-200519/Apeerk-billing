@@ -2,18 +2,39 @@
 
 import { useEffect } from "react";
 import { Create, useForm, useSelect } from "@refinedev/antd";
+import type { BaseRecord, HttpError } from "@refinedev/core";
 import { Form, Select, InputNumber, DatePicker } from "antd";
 import { Col, Row } from "antd";
 import { SaveOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import type { Dayjs } from "dayjs";
 import { useSearchParams } from "next/navigation";
 import { formatMoney } from "@/lib/format";
 
+type InvoiceOption = {
+    id: string;
+    invoice_number: string;
+    total_ttc: number | string;
+    billings?: Array<{ amount: number | string }>;
+    subscription?: {
+        customer?: {
+            name?: string;
+        };
+    };
+};
+
+type BillingFormValues = {
+    invoice_id: string;
+    payment_mode: "VIREMENT" | "CARTE" | "ESPECES";
+    payment_date: Dayjs | string;
+    amount: number;
+};
+
 // remaining = total TTC minus payments already recorded (rounded to cents)
-const remainingOf = (inv: any) =>
+const remainingOf = (inv: InvoiceOption) =>
     Math.round(
         (Number(inv.total_ttc) -
-            (inv.billings ?? []).reduce((s: number, b: any) => s + Number(b.amount), 0)) *
+            (inv.billings ?? []).reduce((s, b) => s + Number(b.amount), 0)) *
         100
     ) / 100;
 
@@ -21,18 +42,17 @@ export default function BillingCreate() {
     const searchParams = useSearchParams();
     const presetInvoice = searchParams.get("invoice_id") ?? undefined;
 
-    const { formProps, saveButtonProps } = useForm({
+    const { formProps, saveButtonProps, form } = useForm<BaseRecord, HttpError, BillingFormValues>({
         resource: "billing",
         action: "create",
         redirect: "list",
         meta: { fields: ["id"] },
     });
-    const form = formProps.form!;
 
     const { selectProps, query } = useSelect({
         resource: "invoice",
-        optionValue: (i: any) => i.id,
-        optionLabel: (i: any) =>
+        optionValue: (i: InvoiceOption) => i.id,
+        optionLabel: (i: InvoiceOption) =>
             `${i.invoice_number} - ${i.subscription?.customer?.name} - remaining ${formatMoney(remainingOf(i))}`,
         filters: [{ field: "status", operator: "eq", value: "PENDING" }],
         meta: {
@@ -44,7 +64,7 @@ export default function BillingCreate() {
         },
     });
 
-    const invoices = (query?.data?.data ?? []) as any[];
+    const invoices = (query?.data?.data ?? []) as InvoiceOption[];
     const invoiceId = Form.useWatch("invoice_id", form);
     const selected = invoices.find((i) => i.id === invoiceId);
     const remaining = selected ? remainingOf(selected) : undefined;
@@ -56,8 +76,9 @@ export default function BillingCreate() {
 
     return (
         <Create saveButtonProps={{ ...saveButtonProps, icon: <SaveOutlined /> }}>
-            <Form
+            <Form<BillingFormValues>
                 {...formProps}
+                form={form}
                 className="create-form"
                 layout="vertical"
                 initialValues={{
@@ -65,11 +86,11 @@ export default function BillingCreate() {
                     payment_mode: "VIREMENT",
                     payment_date: dayjs(),
                 }}
-                onFinish={(values: any) =>
+                onFinish={(values: BillingFormValues) =>
                     formProps.onFinish?.({
                         invoice_id: values.invoice_id,
                         payment_mode: values.payment_mode,
-                        payment_date: values.payment_date.format("YYYY-MM-DD"),
+                        payment_date: dayjs(values.payment_date).format("YYYY-MM-DD"),
                         amount: values.amount,
                     })
                 }
